@@ -2,6 +2,9 @@
 
 An automated system built with **n8n** that monitors Cyber Threat Intelligence (CTI) feeds from multiple sources, summarizes the articles using Local LLMs (**Ollama/Phi3**), and delivers them to **Discord** channels.
 
+> [!TIP]
+> **New to n8n or Ollama?** Check out our detailed [A to Z Setup Guide](./GUIDE.md) to get started!
+
 ## 🚀 Features
 
 - **Multi-Source Monitoring**: Monitors feeds from TechRadar, BleepingComputer, SecurityWeek, and The Hacker News.
