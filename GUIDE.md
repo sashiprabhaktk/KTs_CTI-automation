@@ -2,6 +2,9 @@
 
 This guide will walk you through setting up the Automated Cyber Threat Intelligence (CTI) workflow from scratch.
 
+> [!NOTE]
+> Want to see how it looks first? [Join our Discord community](https://discord.gg/cVkfC9pJ) to see live updates!
+
 ## 📋 Prerequisites
 
 Before you begin, ensure you have the following installed and running:
