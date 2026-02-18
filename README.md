@@ -5,6 +5,10 @@ An automated system built with **n8n** that monitors Cyber Threat Intelligence (
 > [!TIP]
 > **New to n8n or Ollama?** Check out our detailed [A to Z Setup Guide](./GUIDE.md) to get started!
 
+### 📢 Live Updates
+Join our Discord server to see the bot in action and get real-time CTI updates:
+[**Join KT's CTI Discord**](https://discord.gg/cVkfC9pJ)
+
 ## 🚀 Features
 
 - **Multi-Source Monitoring**: Monitors feeds from TechRadar, BleepingComputer, SecurityWeek, and The Hacker News.
