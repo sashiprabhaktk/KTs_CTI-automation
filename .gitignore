@@ -1,0 +1,6 @@
+# n8n backups and junk
+*.bak
+node_modules/
+.env
+.DS_Store
+Thumbs.db

@@ -1,0 +1,838 @@
+{
+  "name": "KT's CTI III",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "18fce4da-2a9c-48e4-b050-12212690bebc",
+              "name": "title",
+              "value": "={{ $json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "22e4b9d6-fd4a-417f-a620-51052b05bd74",
+              "name": "creator",
+              "value": "={{ $json.creator }}",
+              "type": "string"
+            },
+            {
+              "id": "8528dc67-f50d-4e18-a202-57cd533601f8",
+              "name": "pubDate",
+              "value": "={{ $json.pubDate }}",
+              "type": "string"
+            },
+            {
+              "id": "2caafcbd-db63-40ad-a52e-359248c0ac48",
+              "name": "content",
+              "value": "={{ $json.content }}",
+              "type": "string"
+            },
+            {
+              "id": "18c7a706-c18f-42e6-a3e2-0deaedc8ef05",
+              "name": "link",
+              "value": "={{ $json.link }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1408,
+        -496
+      ],
+      "id": "fc1679a8-f779-4811-95ce-05d418ece7b9",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "maxItems": 2
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        -1696,
+        80
+      ],
+      "id": "1ee1de87-2bdf-4095-b47a-70216961c62e",
+      "name": "Limit2"
+    },
+    {
+      "parameters": {
+        "maxItems": 2
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        -1696,
+        -192
+      ],
+      "id": "ec71c2c3-2a2f-4cd8-ad83-9fd22a0f306b",
+      "name": "Limit1"
+    },
+    {
+      "parameters": {
+        "maxItems": 2
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        -1696,
+        -496
+      ],
+      "id": "45e8b0fd-f80f-4784-81c6-8994266534c4",
+      "name": "Limit"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a news summarizer.\n\nSummarize the following article in very simple English so a non-technical person can easily understand it.\n\nRules:\n- Use a maximum of 3 short sentences.\n- Keep the total length under 1500 characters.\n- Focus only on the main message and why it matters.\n- Do not add extra details, opinions, or explanations.\n- Do not repeat the title.\n\nArticle:\n{{ $json.content }}",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        -1088,
+        -496
+      ],
+      "id": "d077187c-78ea-4bb8-aa0a-f801501685c7",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "model": "phi3:latest",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmOllama",
+      "typeVersion": 1,
+      "position": [
+        -816,
+        -368
+      ],
+      "id": "234d1859-a868-48ea-a14d-49a2b6f364b2",
+      "name": "Ollama Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "IZzBA6xy76C2i02f",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 14,
+              "triggerAtMinute": 1
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -2256,
+        -160
+      ],
+      "id": "4838fefb-c996-4dd5-bd70-2a7a128ca7ef",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "authentication": "webhook",
+        "content": "=Hey there! 👋  \nHere is your news for today:\n\n**{{ $('Edit Fields').item.json.title }}**\n{{ $('Edit Fields').item.json.creator }}\n{{ $('Edit Fields').item.json.pubDate }}\n\n{{ $json.text }}\n\n🔗 Read more:\n{{ $('Edit Fields').item.json.link }}\n\nReact with 🔥 if useful!",
+        "options": {},
+        "embeds": {
+          "values": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        -640,
+        -496
+      ],
+      "id": "1eb8cab9-80ef-4929-844b-15325d002156",
+      "name": "Discord",
+      "webhookId": "Replace your API",
+      "credentials": {
+        "discordWebhookApi": {
+          "id": "Replace your API",
+          "name": "Discord Webhook account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://www.techradar.com/feeds/tag/ai",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        -1952,
+        -496
+      ],
+      "id": "e10ec225-26bf-42c6-9e9b-3da9fab5eb79",
+      "name": "techradar RSS "
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "95a9b64c-1d08-4316-8142-5f62e23afcd5",
+              "name": "creator",
+              "value": "={{ $json.creator }}",
+              "type": "string"
+            },
+            {
+              "id": "b9eafc6c-25fb-4e6b-bad9-35e0ebb7712d",
+              "name": "title",
+              "value": "={{ $json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "a9e854ca-664e-4768-bc18-ccd137aba2fe",
+              "name": "link",
+              "value": "={{ $json.link }}",
+              "type": "string"
+            },
+            {
+              "id": "ead57a3d-b7ef-4c69-9025-22910b734637",
+              "name": "content",
+              "value": "={{ $json.content }}",
+              "type": "string"
+            },
+            {
+              "id": "936dd86e-1c50-47dc-972d-d4861384b018",
+              "name": "pubDate",
+              "value": "={{ $json.pubDate }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1408,
+        -192
+      ],
+      "id": "79f1cce1-c9fa-4a4a-aa6e-db956767690c",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a news summarizer.\n\nSummarize the following article in simple English so a non-technical user can quickly understand the main idea.\n\nKeep it under 3 short sentences.\nFocus only on the main message and why it matters.\nDo not add extra explanations.\nDo not repeat the title.\nKeep the total length under 1500 characters.\n\nArticle:\n{{ $json.content }}",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        -1072,
+        -192
+      ],
+      "id": "a0c2dff7-c6b9-4d20-934b-a9d1fa9c138f",
+      "name": "Basic LLM Chain1"
+    },
+    {
+      "parameters": {
+        "model": "phi3:latest",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmOllama",
+      "typeVersion": 1,
+      "position": [
+        -800,
+        -64
+      ],
+      "id": "26de3a19-d9b1-491c-a833-4908815ab2e0",
+      "name": "Ollama Model1",
+      "credentials": {
+        "ollamaApi": {
+          "id": "IZzBA6xy76C2i02f",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "webhook",
+        "content": "=Hey there! 👋  \nHere is your news for today:\n\n**{{ $('Edit Fields1').item.json.title }}**\n{{ $('Edit Fields1').item.json.creator }}\n{{ $('Edit Fields1').item.json.pubDate }}\n\n{{ $json.text }}\n\n🔗 Read more:\n{{ $('Edit Fields1').item.json.link }}\n\nReact with 🔥 if useful!",
+        "options": {},
+        "embeds": {
+          "values": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        -624,
+        -192
+      ],
+      "id": "86e78ed2-1129-4f9c-b83f-a22305d4f343",
+      "name": "Discord1",
+      "webhookId": "Replace your API",
+      "credentials": {
+        "discordWebhookApi": {
+          "id": "Replace your API",
+          "name": "Discord Webhook account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://www.bleepingcomputer.com/feed/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        -1952,
+        -192
+      ],
+      "id": "c7a8204e-ca7a-4871-8543-b0f900a50676",
+      "name": "bleepingcomputer RSS "
+    },
+    {
+      "parameters": {
+        "url": "https://www.securityweek.com/feed/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        -1952,
+        80
+      ],
+      "id": "8ab33869-3eaf-4218-8a75-b152c44276a4",
+      "name": "securityweek RSS "
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5f186754-f0cb-4740-a84e-b60cec49e7d3",
+              "name": "creator",
+              "value": "={{ $json.creator }}",
+              "type": "string"
+            },
+            {
+              "id": "1f2b1cb0-0c34-404a-804a-a2a2b513ce1f",
+              "name": "title",
+              "value": "={{ $json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "16dc4bbf-0a3f-4e9d-b334-dbfc5c511e1f",
+              "name": "link",
+              "value": "={{ $json.link }}",
+              "type": "string"
+            },
+            {
+              "id": "8238591b-81c1-42b8-900e-78616d59b8d4",
+              "name": "content",
+              "value": "={{ $json.content }}",
+              "type": "string"
+            },
+            {
+              "id": "a96ff999-5d23-441b-85a6-468ff2e27a53",
+              "name": "pubDate",
+              "value": "={{ $json.pubDate }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1408,
+        80
+      ],
+      "id": "5d80395c-652f-4c05-8749-575dd5013965",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a news summarizer.\n\nSummarize the following article in simple English so a non-technical user can quickly understand the main idea.\n\nKeep it under 3 short sentences.\nFocus only on the main message and why it matters.\nDo not add extra explanations.\nDo not repeat the title.\nKeep the total length under 1500 characters.\n\nArticle:\n{{ $json.content }}",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        -1072,
+        80
+      ],
+      "id": "1c785995-b2eb-4688-aaf7-64fdf7397253",
+      "name": "Basic LLM Chain2"
+    },
+    {
+      "parameters": {
+        "model": "phi3:latest",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmOllama",
+      "typeVersion": 1,
+      "position": [
+        -784,
+        224
+      ],
+      "id": "11ac2a6c-074d-46f0-b4d1-0cd0085c2f4f",
+      "name": "Ollama Model2",
+      "credentials": {
+        "ollamaApi": {
+          "id": "IZzBA6xy76C2i02f",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "webhook",
+        "content": "=Hey there! 👋  \nHere is your news for today:\n\n**{{ $('Edit Fields2').item.json.title }}**\n{{ $('Edit Fields2').item.json.creator }}\n{{ $('Edit Fields2').item.json.pubDate }}\n\n{{ $json.text }}\n\n🔗 Read more:\n{{ $('Edit Fields2').item.json.link }}\n\nReact with 🔥 if useful!",
+        "options": {},
+        "embeds": {
+          "values": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        -624,
+        80
+      ],
+      "id": "626d6693-4ba7-4fbe-8c22-f11e22841d40",
+      "name": "Discord2",
+      "webhookId": "Replace your API",
+      "credentials": {
+        "discordWebhookApi": {
+          "id": "Replace your API",
+          "name": "Discord Webhook account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://feeds.feedburner.com/TheHackersNews",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        -1952,
+        416
+      ],
+      "id": "c1922a72-7560-48a2-9198-7e94dbc7b242",
+      "name": "TheHackersNews RSS "
+    },
+    {
+      "parameters": {
+        "maxItems": 2
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        -1680,
+        416
+      ],
+      "id": "ceee7aaa-da2b-4c98-81d2-87c7ac67f38f",
+      "name": "Limit3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "75bea6c4-9599-4c37-995c-e7b986758fa1",
+              "name": "creator",
+              "value": "={{ $json.creator }}",
+              "type": "string"
+            },
+            {
+              "id": "b7ea1576-b804-4220-9654-e40c65b44644",
+              "name": "title",
+              "value": "={{ $json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "d77ad219-5d28-420a-ac57-0f0a43a1fb24",
+              "name": "link",
+              "value": "={{ $json.link }}",
+              "type": "string"
+            },
+            {
+              "id": "e9fffed3-2801-406a-b20f-6d60a408134c",
+              "name": "pubDate",
+              "value": "={{ $json.pubDate }}",
+              "type": "string"
+            },
+            {
+              "id": "427fe2c8-422e-467a-96e5-61e12473438f",
+              "name": "content",
+              "value": "={{ $json.content }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1408,
+        416
+      ],
+      "id": "90b59ca0-243f-4be1-ad8b-722e4f5b8449",
+      "name": "Edit Fields3"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a news summarizer.\n\nSummarize the following article in simple English so a non-technical user can quickly understand the main idea.\n\nKeep it under 3 short sentences.\nFocus only on the main message and why it matters.\nDo not add extra explanations.\nDo not repeat the title.\nKeep the total length under 1500 characters.\n\nArticle:\n{{ $json.content }}",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        -1056,
+        416
+      ],
+      "id": "62af304d-d710-4ff5-b0cb-132145e1db46",
+      "name": "Basic LLM Chain3"
+    },
+    {
+      "parameters": {
+        "model": "phi3:latest",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmOllama",
+      "typeVersion": 1,
+      "position": [
+        -800,
+        544
+      ],
+      "id": "1ac92a27-5848-429f-b7a2-2ae29fa9edb2",
+      "name": "Ollama Model3",
+      "credentials": {
+        "ollamaApi": {
+          "id": "IZzBA6xy76C2i02f",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "webhook",
+        "content": "=Hey there! 👋  \nHere is your news for today:\n\n**{{ $('Edit Fields3').item.json.title }}**\n{{ $('Edit Fields3').item.json.creator }}\n{{ $('Edit Fields3').item.json.pubDate }}\n\n{{ $json.text }}\n\n🔗 Read more:\n{{ $('Edit Fields3').item.json.link }}\n\nReact with 🔥 if useful!",
+        "options": {},
+        "embeds": {
+          "values": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        -608,
+        416
+      ],
+      "id": "165ffe79-e661-4ed1-9a24-4c29789f1568",
+      "name": "Discord3",
+      "webhookId": "Replace your API",
+      "credentials": {
+        "discordWebhookApi": {
+          "id": "Replace your API",
+          "name": "Discord Webhook account 4"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Limit": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Discord",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit2": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "securityweek RSS ",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "bleepingcomputer RSS ",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "techradar RSS ",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "TheHackersNews RSS ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "techradar RSS ": {
+      "main": [
+        [
+          {
+            "node": "Limit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain1": {
+      "main": [
+        [
+          {
+            "node": "Discord1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "bleepingcomputer RSS ": {
+      "main": [
+        [
+          {
+            "node": "Limit1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "securityweek RSS ": {
+      "main": [
+        [
+          {
+            "node": "Limit2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain2": {
+      "main": [
+        [
+          {
+            "node": "Discord2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TheHackersNews RSS ": {
+      "main": [
+        [
+          {
+            "node": "Limit3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit3": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain3",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain3": {
+      "main": [
+        [
+          {
+            "node": "Discord3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "8250d92e-4269-40e1-ba80-54e124ce3007",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "Replace your API"
+  },
+  "id": "aFB8DpfQbikRKqev",
+  "tags": [
+    {
+      "updatedAt": "2026-02-12T18:43:29.721Z",
+      "createdAt": "2026-02-12T18:43:05.494Z",
+      "id": "8IWTSMjZCyjiLAu2",
+      "name": "CTI"
+    }
+  ]
+}
